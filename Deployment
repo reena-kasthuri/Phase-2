@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection System Deployment</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>AI-Powered Credit Card Fraud Detection</h1>
+        <p>Live Deployment Dashboard</p>
+    </header>
+    <main>
+        <section id="deployment-status">
+            <h2>System Status</h2>
+            <ul>
+                <li>API Endpoint: <code>https://api.fraudshield.com/v1/check_transaction</code></li>
+                <li>Model Version: <strong>v1.2.4</strong></li>
+                <li>Uptime: <strong>99.99%</strong></li>
+                <li>Transactions Processed Today: <strong>24,385</strong></li>
+                <li>Frauds Detected: <strong>148</strong></li>
+            </ul>
+        </section>
+
+        <section id="demo">
+            <h2>Try a Demo Transaction</h2>
+            <form id="transaction-form">
+                <label for="amount">Transaction Amount ($):</label>
+                <input type="number" id="amount" name="amount" required>
+
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" required>
+
+                <label for="card-type">Card Type:</label>
+                <select id="card-type" name="card-type">
+                    <option value="debit">Debit</option>
+                    <option value="credit">Credit</option>
+                </select>
+
+                <button type="submit">Check Fraud Risk</button>
+            </form>
+            <div id="result"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 FraudShield AI. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('transaction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // This is a placeholder — in real use, fetch would call your API
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p><strong>Risk Score:</strong> 0.87 (Transaction Blocked)</p>';
+        });
+    </script>
+</body>
+</html>
