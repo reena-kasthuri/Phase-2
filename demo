@@ -1,0 +1,97 @@
+# full_fraud_detection_system.py
+
+import pandas as pd
+import numpy as np
+import joblib
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+
+# 1. Load and Prepare the Dataset
+print("Loading dataset...")
+data = pd.read_csv('creditcard.csv')  # Use the Kaggle Credit Card Fraud Detection dataset
+
+# Check for missing values
+if data.isnull().sum().any():
+    print("Cleaning data...")
+    data.dropna(inplace=True)
+
+# Features and labels
+X = data.drop(['Class'], axis=1)  # Features
+y = data['Class']                 # Target label
+
+# 2. Train-Test Split
+print("Splitting dataset...")
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=42
+)
+
+# 3. Model Training
+print("Training Random Forest Classifier...")
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# 4. Model Evaluation
+print("Evaluating model...")
+y_pred = model.predict(X_test)
+y_prob = model.predict_proba(X_test)[:, 1]
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+# 5. Save the Model
+print("Saving model to fraud_detector_model.pkl...")
+joblib.dump(model, 'fraud_detector_model.pkl')
+
+# 6. Simulate Transactions and Predict
+print("\nRunning fraud check on simulated transactions...")
+
+# Simulate new transaction data
+demo_data = {
+    'Time': [50000, 100000],
+    'V1': [0.1, -1.2],
+    'V2': [-0.3, 0.4],
+    'V3': [0.2, 0.1],
+    'V4': [-0.1, 0.3],
+    'V5': [1.1, -0.6],
+    'V6': [0.6, 0.9],
+    'V7': [-0.4, 0.7],
+    'V8': [0.2, 0.2],
+    'V9': [1.0, -1.1],
+    'V10': [-0.3, 0.5],
+    'V11': [0.1, 0.0],
+    'V12': [-0.2, -0.5],
+    'V13': [0.4, 0.9],
+    'V14': [-0.1, -0.2],
+    'V15': [0.3, -0.6],
+    'V16': [0.7, 0.3],
+    'V17': [1.1, -0.3],
+    'V18': [0.0, 0.0],
+    'V19': [0.5, -0.4],
+    'V20': [0.6, -0.7],
+    'V21': [-0.1, 0.5],
+    'V22': [0.3, 0.2],
+    'V23': [0.0, -0.6],
+    'V24': [-0.5, 0.1],
+    'V25': [0.2, -0.1],
+    'V26': [0.4, -0.2],
+    'V27': [-0.3, 0.3],
+    'V28': [0.1, -0.4],
+    'Amount': [250.0, 1200.0]
+}
+
+demo_df = pd.DataFrame(demo_data)
+
+# Predict
+predictions = model.predict(demo_df)
+probabilities = model.predict_proba(demo_df)[:, 1]
+
+# Display Results
+for i, (pred, prob) in enumerate(zip(predictions, probabilities)):
+    status = "FRAUD" if pred == 1 else "LEGITIMATE"
+    print(f"Transaction {i+1}: Status = {status}, Risk Score = {prob:.2f}")
